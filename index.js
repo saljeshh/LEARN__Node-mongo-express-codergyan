@@ -1,50 +1,65 @@
-/*
-
-// this is common js i.e require()
-const lib = require("./lib.js");
-
-const sum = lib.sum(2, 4);
-console.log(sum);
-
-const sub = lib.diff(3, 2);
-console.log(sub);
-
-*/
-
-/*
-// using ecma script module like react
-import { sum, diff } from "./lib.js";
-
-const sums = sum(2, 3);
-const diffs = diff(2, 34);
-
-console.log(sums);
-
-console.log(diffs);
-*/
-
-// using fs module
+const http = require("http");
+const data = require("./data.json");
 const fs = require("fs");
+//const product = data.products[0];
 
-// this is synchronous so it mustnt be used in server as server isnt blocked
-// const txt = fs.readFileSync("demo.txt", "utf-8");
-// console.log(txt);
+const index = fs.readFileSync("index.html", "utf-8");
 
-// this is asynchronous , so response is in callback
+// const server = http.createServer((req, res) => {
 
-// testing performace
-const t1 = performance.now();
-console.log(5 + 7);
+//   // reason the server start twice because one for path another for the facicon
+//   console.log(req.url);
 
-/*
-    when we pass only one argument in callback it means its error
-    as first is (err, data) is format
-*/
+//   console.log("Server Started");
+//   // unknown header
+//   res.setHeader("Dummy", "Dumy Value");
+//   // known header
+//   res.setHeader("Content-Type", "text/html");
+//   //res.setHeader("Content-Type", "json");
+//   // converting to json otherwise browser wont understand
+//   //res.end(JSON.stringify(data));
+//   res.end(index);
+// });
 
-fs.readFile("demo.txt", "utf-8", (err, text) => {
-  console.log(text);
+const server = http.createServer((req, res) => {
+  if (req.url.startsWith("/products")) {
+    const id = req.url.split("/")[2];
+
+    const product = data.products[+id];
+    res.setHeader("Content-Type", "text/html");
+    let modIndex = index
+      .replace("**title**", product.title)
+      .replace("**discription**", product.description)
+      .replace("**price**", product.price)
+      .replace("**rating**", product.rating)
+      .replace("**image**", product.images[0]);
+    res.end(modIndex);
+    return;
+  }
+
+  switch (req.url) {
+    case "/":
+      res.setHeader("Content-Type", "application/json");
+      res.end(JSON.stringify(product));
+      break;
+
+    // case `/products`:
+    //   const id = req.params.id;
+    //   const product = data.products[+id];
+    //   res.setHeader("Content-Type", "text/html");
+    //   let modIndex = index
+    //     .replace("**title**", product.title)
+    //     .replace("**discription**", product.description)
+    //     .replace("**price**", product.price)
+    //     .replace("**rating**", product.rating)
+    //     .replace("**image**", product.images[0]);
+    //   res.end(modIndex);
+    //   break;
+
+    default:
+      res.end("404 ERROR");
+  }
 });
-const t2 = performance.now();
-console.log(9 + 7);
 
-console.log(t2 - t1);
+// telling our function(server) where to run i.e run at localhost:4000 when hitted
+server.listen(4000);
