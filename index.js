@@ -1,65 +1,71 @@
-const http = require("http");
 const data = require("./data.json");
 const fs = require("fs");
-//const product = data.products[0];
+const product = data.products;
 
-const index = fs.readFileSync("index.html", "utf-8");
+const express = require("express");
+const morgan = require("morgan");
+const PORT = 4000;
+const server = express();
 
-// const server = http.createServer((req, res) => {
+// body parser
+//json data middleware built in
+server.use(express.json());
+//server.use(express.urlencoded());
 
-//   // reason the server start twice because one for path another for the facicon
-//   console.log(req.url);
+server.use(express.static("public"));
 
-//   console.log("Server Started");
-//   // unknown header
-//   res.setHeader("Dummy", "Dumy Value");
-//   // known header
-//   res.setHeader("Content-Type", "text/html");
-//   //res.setHeader("Content-Type", "json");
-//   // converting to json otherwise browser wont understand
-//   //res.end(JSON.stringify(data));
-//   res.end(index);
-// });
-
-const server = http.createServer((req, res) => {
-  if (req.url.startsWith("/products")) {
-    const id = req.url.split("/")[2];
-
-    const product = data.products[+id];
-    res.setHeader("Content-Type", "text/html");
-    let modIndex = index
-      .replace("**title**", product.title)
-      .replace("**discription**", product.description)
-      .replace("**price**", product.price)
-      .replace("**rating**", product.rating)
-      .replace("**image**", product.images[0]);
-    res.end(modIndex);
-    return;
-  }
-
-  switch (req.url) {
-    case "/":
-      res.setHeader("Content-Type", "application/json");
-      res.end(JSON.stringify(product));
-      break;
-
-    // case `/products`:
-    //   const id = req.params.id;
-    //   const product = data.products[+id];
-    //   res.setHeader("Content-Type", "text/html");
-    //   let modIndex = index
-    //     .replace("**title**", product.title)
-    //     .replace("**discription**", product.description)
-    //     .replace("**price**", product.price)
-    //     .replace("**rating**", product.rating)
-    //     .replace("**image**", product.images[0]);
-    //   res.end(modIndex);
-    //   break;
-
-    default:
-      res.end("404 ERROR");
-  }
+// test middleware
+server.use((req, res, next) => {
+  console.log("this is middleware");
+  console.log(req.method, req.ip, req.hostname, new Date());
+  next();
 });
 
-// telling our function(server) where to run i.e run at localhost:4000 when hitted
-server.listen(4000);
+// authentication middleware
+const auth = (req, res, next) => {
+  console.log(req.query);
+  if (req.query.password || req.body.password) {
+    console.log("Authenticated");
+    next();
+  } else {
+    res.sendStatus(401);
+  }
+};
+
+// if i keep this auth middleware here it will just ask for authentication for every url so better use router level middleware
+//server.use(auth);
+
+// third party middleware
+server.use(morgan("dev")); // see on express/reserouce/middleware/morgan
+// POST /?password=123 200 4.688 ms - 15 -------- job of morgan i.e logger
+
+// API -  ENDPOINT / Route - NOT rest api yet
+server.get("/", (req, res) => {
+  //res.json(product);
+  // for html
+  //res.send(fs.readFileSync("index.html", "utf8"));
+  //res.sendStatus(201);
+  res.status(201).send(fs.readFileSync("index.html", "utf8"));
+});
+
+// using middleware to make auth first
+server.post("/", auth, (req, res) => {
+  res.json({ type: "POST" });
+});
+
+server.put("/", auth, (req, res) => {
+  res.json({ type: "PUT" });
+});
+
+server.delete("/", auth, (req, res) => {
+  res.json({ type: "DELETE" });
+});
+
+server.patch("/", auth, (req, res) => {
+  res.json({ type: "PATCH" });
+});
+
+// server listen
+server.listen(PORT, () => {
+  console.log(`Server listening on https://localhost:${PORT}`);
+});
