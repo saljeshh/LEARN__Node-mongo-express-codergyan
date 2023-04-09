@@ -1,71 +1,67 @@
-const data = require("./data.json");
-const fs = require("fs");
-const product = data.products;
-
 const express = require("express");
-const morgan = require("morgan");
-const PORT = 4000;
+const data = require("./data.json");
+
 const server = express();
+const PORT = 4000;
 
-// body parser
-//json data middleware built in
+// middlewares
 server.use(express.json());
-//server.use(express.urlencoded());
 
-server.use(express.static("public"));
+// routes-restapi
+//products
+// API ROOT , base URL, example - google.com/api/v2
 
-// test middleware
-server.use((req, res, next) => {
-  console.log("this is middleware");
-  console.log(req.method, req.ip, req.hostname, new Date());
-  next();
+/* -------CREATE API ------------- */
+server.post("/products", (req, res) => {
+  // saving into database for now it is our json data
+  data.products.push(req.body);
+  res.status(201).json(req.body);
 });
 
-// authentication middleware
-const auth = (req, res, next) => {
-  console.log(req.query);
-  if (req.query.password || req.body.password) {
-    console.log("Authenticated");
-    next();
-  } else {
-    res.sendStatus(401);
-  }
-};
-
-// if i keep this auth middleware here it will just ask for authentication for every url so better use router level middleware
-//server.use(auth);
-
-// third party middleware
-server.use(morgan("dev")); // see on express/reserouce/middleware/morgan
-// POST /?password=123 200 4.688 ms - 15 -------- job of morgan i.e logger
-
-// API -  ENDPOINT / Route - NOT rest api yet
-server.get("/", (req, res) => {
-  //res.json(product);
-  // for html
-  //res.send(fs.readFileSync("index.html", "utf8"));
-  //res.sendStatus(201);
-  res.status(201).send(fs.readFileSync("index.html", "utf8"));
+// READ = all products
+server.get("/products", (req, res) => {
+  res.status(201).json(data);
 });
 
-// using middleware to make auth first
-server.post("/", auth, (req, res) => {
-  res.json({ type: "POST" });
+// READ = one specific product
+server.get("/products/:id", (req, res) => {
+  const id = +req.params.id;
+  const product = data.products.find((p) => p.id === id);
+  res.status(200).json(product);
 });
 
-server.put("/", auth, (req, res) => {
-  res.json({ type: "PUT" });
+// update replaces all
+// UPDATE = one specific product
+server.put("/products/:id", (req, res) => {
+  const id = +req.params.id;
+  const productIndex = data.products.findIndex((p) => p.id === id);
+
+  data.products.splice(productIndex, 1, { ...req.body, id: id });
+
+  res.status(201).json({ success: true });
 });
 
-server.delete("/", auth, (req, res) => {
-  res.json({ type: "DELETE" });
+// patch only updates the key and values we sent
+// PATCH
+server.patch("/products/:id", (req, res) => {
+  const id = +req.params.id;
+  const productIndex = data.products.findIndex((p) => p.id === id);
+  const product = data.products[productIndex];
+  data.products.splice(productIndex, 1, { ...product, ...req.body });
+
+  res.status(201).json({ success: true });
 });
 
-server.patch("/", auth, (req, res) => {
-  res.json({ type: "PATCH" });
+// DELETE - only one in REST
+server.delete("/products/:id", (req, res) => {
+  const id = +req.params.id;
+  const productIndex = data.products.findIndex((p) => p.id === id);
+  data.products.splice(productIndex, 1); // remove
+
+  res.status(201).json({ success: true });
 });
 
-// server listen
 server.listen(PORT, () => {
-  console.log(`Server listening on https://localhost:${PORT}`);
+  console.log(`listening on https://localhost:${PORT}`);
+  ``;
 });
