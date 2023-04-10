@@ -1,43 +1,91 @@
-const data = require("../data.json");
+const { Product } = require("../model/product");
 
 exports.createProduct = (req, res) => {
-  // saving into database for now it is our json data
-  data.products.push(req.body);
-  res.status(201).json(req.body);
+  const product = new Product(req.body);
+
+  product.save();
+
+  res.status(201).json(product);
 };
 
-exports.getAllProducts = (req, res) => {
-  res.status(201).json(data);
+exports.getAllProducts = async (req, res) => {
+  const products = await Product.find();
+
+  if (!products) {
+    return res.status(404).json({
+      success: false,
+      message: "Product not found",
+    });
+  }
+
+  res.status(200).json(products);
 };
 
-exports.getProduct = (req, res) => {
-  const id = +req.params.id;
-  const product = data.products.find((p) => p.id === id);
-  res.status(200).json(product);
+exports.getProduct = async (req, res) => {
+  const id = req.params.id;
+  const product = await Product.findById(id);
+
+  if (!product) {
+    return res.status(404).json({
+      success: false,
+      message: "Product not found",
+    });
+  }
+
+  res.status(200).json({
+    success: true,
+    product,
+  });
 };
 
-exports.replaceProduct = (req, res) => {
-  const id = +req.params.id;
-  const productIndex = data.products.findIndex((p) => p.id === id);
+exports.replaceProduct = async (req, res) => {
+  const id = req.params.id;
+  const product = await Product.findOneAndReplace({ _id: id }, req.body, {
+    new: true,
+  });
+  if (!product) {
+    return res.status(404).json({
+      success: false,
+      message: "Product not found",
+    });
+  }
 
-  data.products.splice(productIndex, 1, { ...req.body, id: id });
-
-  res.status(201).json({ success: true });
+  res.status(200).json({
+    success: true,
+    message: "Product Updated Successfully",
+  });
 };
 
-exports.updateProduct = (req, res) => {
-  const id = +req.params.id;
-  const productIndex = data.products.findIndex((p) => p.id === id);
-  const product = data.products[productIndex];
-  data.products.splice(productIndex, 1, { ...product, ...req.body });
+exports.updateProduct = async (req, res) => {
+  const id = req.params.id;
+  const product = await Product.findOneAndUpdate(id, req.body);
 
-  res.status(201).json({ success: true });
+  if (!product) {
+    return res.status(404).json({
+      success: false,
+      message: "Product not found",
+    });
+  }
+
+  res.status(200).json({
+    success: true,
+    message: "Product Modified Successfully",
+  });
 };
 
-exports.deleteProduct = (req, res) => {
-  const id = +req.params.id;
-  const productIndex = data.products.findIndex((p) => p.id === id);
-  data.products.splice(productIndex, 1); // remove
+exports.deleteProduct = async (req, res) => {
+  const id = req.params.id;
+  const product = await Product.findByIdAndDelete(id);
 
-  res.status(201).json({ success: true });
+  if (!product) {
+    return res.status(404).json({
+      success: false,
+      message: "Product not found",
+    });
+  }
+
+  res.status(200).json({
+    success: true,
+    message: "Product deleted",
+  });
 };
