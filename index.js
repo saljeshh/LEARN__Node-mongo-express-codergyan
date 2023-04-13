@@ -1,8 +1,12 @@
+require("dotenv").config();
+
 const express = require("express");
 const product = require("./routes/product");
+const user = require("./routes/user");
 const mongoose = require("mongoose");
+const cors = require("cors");
 
-//connection to mongodb
+// connection to mongodb
 main()
   .then(() => console.log("Connected to Mongodb"))
   .catch((err) => console.error(err));
@@ -13,12 +17,15 @@ async function main() {
 
 // server and port
 const server = express();
-const PORT = 4000;
+//console.log("env", process.env.PORT);
 
 // middlewares
+server.use(cors());
 server.use(express.json());
+server.use(express.static(process.env.PUBLIC_DIR));
 server.use("/api", product);
+server.use("/api", user);
 
-server.listen(PORT, () => {
-  console.log(`listening on https://localhost:${PORT}`);
+server.listen(process.env.PORT, () => {
+  console.log(`listening on https://localhost:${process.env.PORT}`);
 });

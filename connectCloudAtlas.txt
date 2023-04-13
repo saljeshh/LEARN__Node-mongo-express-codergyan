@@ -1,0 +1,95 @@
+Microsoft Windows [Version 10.0.19045.2846]
+(c) Microsoft Corporation. All rights reserved.
+
+C:\WINDOWS\system32>mongosh --version
+1.8.0
+
+C:\WINDOWS\system32>mongo --version
+MongoDB shell version v5.0.15
+Build Info: {
+    "version": "5.0.15",
+    "gitVersion": "935639beed3d0c19c2551c93854b831107c0b118",
+    "modules": [],
+    "allocator": "tcmalloc",
+    "environment": {
+        "distmod": "windows",
+        "distarch": "x86_64",
+        "target_arch": "x86_64"
+    }
+}
+
+C:\WINDOWS\system32>mongosh "mongodb+srv://cluster0.cexjdpj.mongodb.net/myFirstDatabase" --apiVersion 1 --username coderdost
+Enter password: *********
+Current Mongosh Log ID: 643818a4be8c57c3d1ec2639
+Connecting to:          mongodb+srv://<credentials>@cluster0.cexjdpj.mongodb.net/myFirstDatabase?appName=mongosh+1.8.0
+Using MongoDB:          6.0.5 (API Version 1)
+Using Mongosh:          1.8.0
+
+For mongosh info see: https://docs.mongodb.com/mongodb-shell/
+
+Warning: Found ~/.mongorc.js, but not ~/.mongoshrc.js. ~/.mongorc.js will not be loaded.
+  You may want to copy or rename ~/.mongorc.js to ~/.mongoshrc.js.
+Atlas atlas-95uwz4-shard-0 [primary] myFirstDatabase> Atlas atlas-95uwz4-shard-0 [primary] myFirstDatabase> Atlas atlas-95uwz4-shard-0 [primary] myFirstDatabase> exit
+
+C:\WINDOWS\system32>mongosh "mongodb+srv://cluster0.cexjdpj.mongodb.net/ecommerceDatabase" --apiVersion 1 --username coderdost
+Enter password: *********
+Current Mongosh Log ID: 643818fb05ddb2fda874fd4c
+Connecting to:          mongodb+srv://<credentials>@cluster0.cexjdpj.mongodb.net/ecommerceDatabase?appName=mongosh+1.8.0
+Using MongoDB:          6.0.5 (API Version 1)
+Using Mongosh:          1.8.0
+
+For mongosh info see: https://docs.mongodb.com/mongodb-shell/
+
+Warning: Found ~/.mongorc.js, but not ~/.mongoshrc.js. ~/.mongorc.js will not be loaded.
+  You may want to copy or rename ~/.mongorc.js to ~/.mongoshrc.js.
+Atlas atlas-95uwz4-shard-0 [primary] ecommerceDatabase> show dbs
+admin  336.00 KiB
+local    3.82 GiB
+Atlas atlas-95uwz4-shard-0 [primary] ecommerceDatabase> show collections
+
+Atlas atlas-95uwz4-shard-0 [primary] ecommerceDatabase> db.products.insertOne({
+...       "id": 4,
+...       "title": "OPPOF19",
+...       "description": "OPPO F19 is officially announced on April 2021.",
+...       "price": 280,
+...       "discountPercentage": 17.91,
+...       "rating": 4.3,
+...       "stock": 123,
+...       "brand": "OPPO",
+...       "category": "smartphones",
+...       "thumbnail": "https://i.dummyjson.com/data/products/4/thumbnail.jpg",
+...       "images": [
+...         "https://i.dummyjson.com/data/products/4/1.jpg",
+...         "https://i.dummyjson.com/data/products/4/2.jpg",
+...         "https://i.dummyjson.com/data/products/4/3.jpg",
+...         "https://i.dummyjson.com/data/products/4/4.jpg",
+...         "https://i.dummyjson.com/data/products/4/thumbnail.jpg"
+...       ]
+...     })
+{
+  acknowledged: true,
+  insertedId: ObjectId("6438196faafa49db696e1c12")
+}
+Atlas atlas-95uwz4-shard-0 [primary] ecommerceDatabase> db.products.find()
+[
+  {
+    _id: ObjectId("6438196faafa49db696e1c12"),
+    id: 4,
+    title: 'OPPOF19',
+    description: 'OPPO F19 is officially announced on April 2021.',
+    price: 280,
+    discountPercentage: 17.91,
+    rating: 4.3,
+    stock: 123,
+    brand: 'OPPO',
+    category: 'smartphones',
+    thumbnail: 'https://i.dummyjson.com/data/products/4/thumbnail.jpg',
+    images: [
+      'https://i.dummyjson.com/data/products/4/1.jpg',
+      'https://i.dummyjson.com/data/products/4/2.jpg',
+      'https://i.dummyjson.com/data/products/4/3.jpg',
+      'https://i.dummyjson.com/data/products/4/4.jpg',
+      'https://i.dummyjson.com/data/products/4/thumbnail.jpg'
+    ]
+  }
+]
