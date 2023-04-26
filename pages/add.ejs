@@ -1,0 +1,75 @@
+<!-- pure html form not any ejs 
+ uses name as helper
+-->
+
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+
+<form action="/api/products" method="POST" class="form-horizontal" enctype="application/x-www-form-urlencoded">
+    <fieldset>
+        <legend>Add Product</legend>
+        <div class="form-group">
+            <label for="" class="col-md-4 control-label" htmlFor="title">Title</label>
+            <div class="col-md-4">
+                <input type="text" class="form-control input-md" id="title" name="title" placeholder="title" />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-md-4 control-label" htmlFor="thumbnail">thumbnail</label>
+            <div class="col-md-4">
+                <input type="text" class="form-control input-md" id="thumbnail" name="thumbnail" placeholder="thumbnail"/>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label htmlFor="price" class="col-md-4 control-label">Price</label>
+            <div class="col-md-4">
+                <input type="text" class="form-control input-md" id="price" name="price" placeholder="price" />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label htmlFor="category" class="col-md-4 control-label">Category</label>
+            <div class="col-md-4">
+                <select id="category" name="category" class="form-control">
+                    <option value="">Choose</option>
+                    <option value="smartphone">SmartPhone</option>
+                    <option value="laptops">Laptops</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-md-4 control-label" htmlFor="brand">
+                Brand
+            </label>
+            <div class="col-md-4">
+                <select id="brand" name="brand" class="form-control">
+                    <option value="">Choose</option>
+                    <option value="apple">Apple</option>
+                    <option value="samsung">SamSung</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-md-4 control-label" htmlFor="discountPercentage">
+                Discount
+            </label>
+            <div class="col-md-4">
+                <input id="discountPercentage" name="discountPercentage" type="number" placeholder="discountPercentage"
+                    class="form-control input-md" />
+                <span class="help-block">help</span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-4">
+                <button id="singlebutton" name="singlebutton" class="btn btn-primary">
+                    Add
+                </button>
+            </div>
+        </div>
+    </fieldset>
+</form>

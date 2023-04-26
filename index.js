@@ -22,10 +22,11 @@ const server = express();
 // middlewares
 server.use(cors());
 server.use(express.json());
+server.use(express.urlencoded());
 server.use(express.static(process.env.PUBLIC_DIR));
 server.use("/api", product);
 server.use("/api", user);
 
 server.listen(process.env.PORT, () => {
-  console.log(`listening on https://localhost:${process.env.PORT}`);
+  console.log(`listening on http://localhost:${process.env.PORT}`);
 });

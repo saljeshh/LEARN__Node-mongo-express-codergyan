@@ -2,41 +2,23 @@ const mongoose = require("mongoose");
 
 //Schema
 const productSchema = new mongoose.Schema({
-  id: {
-    type: Number,
-    required: true,
-    unique: true,
-  },
-  title: {
-    type: String,
-    required: true,
-  },
+  title: { type: String, required: true, unique: true },
   description: String,
-  price: {
-    type: Number,
-    required: true,
-  },
+  price: { type: Number, min: [0, "wrong price"], required: true },
   discountPercentage: {
     type: Number,
-    min: [5, "Discount must be min 5%"],
-    max: [50, "Cant do more than 50%"],
+    min: [0, "wrong min discount"],
+    max: [50, "wrong max discount"],
   },
   rating: {
     type: Number,
-    min: [0, "Wrong rating"],
-    max: [5, "Cant do more than 5"],
+    min: [0, "wrong min rating"],
+    max: [5, "wrong max rating"],
+    default: 0,
   },
-  stock: {
-    type: Number,
-    min: [0, "Cant be negative"],
-    defaultValue: 1,
-  },
-  brand: String,
-  category: {
-    type: String,
-    enum: ["SmartPhone", "Laptop", "Keyboard", "Mouse"],
-  },
-  thumbnail: String,
+  brand: { type: String, required: true },
+  category: { type: String, required: true },
+  thumbnail: { type: String, required: true },
   images: [String],
 });
 
