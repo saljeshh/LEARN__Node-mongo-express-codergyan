@@ -1,37 +1,53 @@
-//const { User } = require("../model/user");
+const { User } = require("../model/user");
 
-exports.createUser = (req, res) => {
-  res.status(201).json({
-    message: "left to create",
-  });
+exports.getAllUsers = async (req, res) => {
+  const users = await User.find();
+  res.json(users);
 };
 
-exports.getAllUsers = (req, res) => {
-  res.status(200).json({
-    message: "left to get all users",
-  });
+exports.getUser = async (req, res) => {
+  const id = req.params.id;
+  console.log(id);
+
+  const user = await User.findById(id);
+  res.json(user);
 };
 
-exports.getUser = (req, res) => {
-  res.status(200).json({
-    message: "left to get user",
-  });
+exports.replaceUser = async (req, res) => {
+  const id = req.params.id;
+  try {
+    const doc = await User.findOneAndReplace({ _id: id }, req.body, {
+      new: true,
+    });
+    res.status(201).json(doc);
+  } catch (err) {
+    console.log(err);
+    res.status(400).json(err);
+  }
 };
 
-exports.replaceUser = (req, res) => {
-  res.status(200).json({
-    message: "left to replace user",
-  });
+exports.updateUser = async (req, res) => {
+  const id = req.params.id;
+
+  try {
+    const doc = await User.findOneAndUpdate({ _id: id }, req.body, {
+      new: true,
+    });
+    res.status(201).json(doc);
+  } catch (err) {
+    console.log(err);
+    res.status(400).json(err);
+  }
 };
 
-exports.updateUser = (req, res) => {
-  res.status(200).json({
-    message: "left to update user",
-  });
-};
+exports.deleteUser = async (req, res) => {
+  const id = req.params.id;
 
-exports.deleteUser = (req, res) => {
-  res.status(200).json({
-    message: "left to delete user",
-  });
+  try {
+    const doc = await User.finOneAndDelete({ _id: id });
+    res.status(201).json(doc);
+  } catch (err) {
+    console.log(err);
+    res.status(400).json(err);
+  }
 };

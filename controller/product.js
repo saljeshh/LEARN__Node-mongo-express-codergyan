@@ -25,11 +25,15 @@ exports.getAddForm = async (req, res) => {
 };
 
 exports.createProduct = (req, res) => {
-  const product = new Product(req.body);
+  try {
+    const product = new Product(req.body);
 
-  product.save();
-
-  res.status(201).json(product);
+    product.save();
+    res.status(201).json(product);
+  } catch (err) {
+    console.log(err);
+    res.status(400).json({ message: "product validation failed or ." });
+  }
 };
 
 exports.getAllProducts = async (req, res) => {
